@@ -15,10 +15,7 @@ connectDB();
 
 // Use the jobRouter for all "/jobs" routes
 app.use("/api/jobs", jobRouter);
-// Use the userRouter for all "/jobs" routes
-app.use("/api/users", userRouter);
-
-
+app.use("/api/users",userRouter)
 app.use(unknownEndpoint);
 app.use(errorHandler);
 
