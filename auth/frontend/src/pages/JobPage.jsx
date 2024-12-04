@@ -10,10 +10,16 @@ const JobPage = () => {
 
   const deleteJob = async (id) => {
     try {
+      console.log("Deleting job with ID:", id);
       const res = await fetch(`/api/jobs/${id}`, {
         method: "DELETE",
       });
-      if (!res.ok) throw new Error("Failed to delete job");
+      if (!res.ok) {
+        const errorData = await res.json();
+        console.error("Server response:", errorData);
+        throw new Error(`Failed to delete job: ${res.status} ${res.statusText}`);
+      }
+      console.log("Job deleted successfully");
       navigate("/");
     } catch (error) {
       console.error("Error deleting job:", error);
@@ -21,6 +27,7 @@ const JobPage = () => {
   };
 
   useEffect(() => {
+    console.log("Fetching job with ID:", id);
     const fetchJob = async () => {
       try {
         const res = await fetch(`/api/jobs/${id}`);
@@ -38,9 +45,12 @@ const JobPage = () => {
   }, [id]);
 
   const onDeleteClick = (jobId) => {
+    if (!jobId) {
+      console.error("Invalid job ID");
+      return;
+    }
     const confirm = window.confirm("Are you sure you want to delete this listing?");
     if (!confirm) return;
-
     deleteJob(jobId);
   };
 
@@ -50,7 +60,7 @@ const JobPage = () => {
         <p>Loading...</p>
       ) : error ? (
         <p>{error}</p>
-      ) : (
+      ) : job ? (
         <>
           <h2>{job.title}</h2>
           <p>Type: {job.type}</p>
@@ -64,11 +74,13 @@ const JobPage = () => {
           <p>
             <strong>Contact Phone:</strong> {job.company.contactPhone}
           </p>
-          <button onClick={() => navigate(`/edit-job/${job.id}`)}>
+          <button onClick={() => navigate(`/edit-job/${job._id}`)}>
             Edit Job
           </button>
-          <button onClick={() => onDeleteClick(job.id)}>Delete Job</button>
+          <button onClick={() => onDeleteClick(job._id)}>Delete Job</button>
         </>
+      ) : (
+        <p>Job not found or has been deleted.</p>
       )}
     </div>
   );
