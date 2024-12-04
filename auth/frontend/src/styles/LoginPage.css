@@ -1,0 +1,71 @@
+.login-page {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #f1356d;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+.login-page h2 {
+    text-align: center;
+    color: #f1356d;
+    margin-bottom: 20px;
+}
+
+.login-page form {
+    display: flex;
+    flex-direction: column;
+}
+
+.login-page label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+.login-page input[type="text"],
+.login-page input[type="password"] {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.login-page button {
+    padding: 10px;
+    background-color: #f1356d;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.login-page button:hover {
+    background-color: #d12a5c;
+}
+
+.signup-redirect {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.signup-redirect p {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.signup-redirect button {
+    padding: 10px;
+    background-color: #f1356d;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.signup-redirect button:hover {
+    background-color: #d12a5c;
+}
