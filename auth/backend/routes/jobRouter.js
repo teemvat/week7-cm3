@@ -10,11 +10,11 @@ const router = express.Router();
 const requireAuth = require("../middleware/requireAuth");
 
 router.get("/", getAllJobs);
-router.post("/", createJob);
+router.get("/:jobId", getJobById);
 
 router.use(requireAuth);
 
-router.get("/:jobId", getJobById);
+router.post("/", createJob);
 router.put("/:jobId", updateJob);
 router.delete("/:jobId", deleteJob);
 
