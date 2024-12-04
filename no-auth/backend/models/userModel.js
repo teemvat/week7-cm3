@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema(
     date_of_birth: { type: Date, required: true },
     membership_status: { type: String, required: true },
     address: { type: String, required: true },
-    profile_picture: { type: String, required: false },
+    profile_picture: { type: Buffer, required: false },
   },
   { timestamps: true, versionKey: false }
 );
