@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const userSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
-    username: { type: String, required: true, unique: true },
+    uUsername: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     phone_number: { type: String, required: true },
     gender: { type: String, required: true },
@@ -13,4 +13,4 @@ const userSchema = new mongoose.Schema(
   },
   { timestamps: true, versionKey: false }
 );
-module.exports = mongoose.model("Job", userSchema);
+module.exports = mongoose.model("User", userSchema);
