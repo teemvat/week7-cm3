@@ -45,7 +45,20 @@ const SignupPage = () => {
 
     const submitForm = async (e) => {
         e.preventDefault();
-        navigate("/");
+        const response = await fetch("http://localhost:4000/api/users/signup", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+        });
+
+        const data = await response.json();
+        console.log(data);
+        if (response.ok)
+            {navigate("/")}
+
+        else {alert(data.message)};
     };
 
     return (

@@ -23,8 +23,7 @@ const signupUser = async (req, res) => {
       !gender ||
       !date_of_birth ||
       !membership_status ||
-      !address ||
-      !profile_picture
+      !address
     ) {
       res.status(400);
       throw new Error("Please add all fields");
