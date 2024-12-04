@@ -27,7 +27,7 @@ describe("User routes", () => {
             const result = await api.post("/api/users/signup").send(userData);
 
             expect(result.status).toBe(201);
-            //expect(result.body).toHaveProperty("token");
+            expect(result.body).toHaveProperty("token");
         });
 
         it("should return an error with invalid credentials", async () => {
@@ -60,7 +60,7 @@ describe("User routes", () => {
             const result = await api.post("/api/users/login").send(userData);
 
             expect(result.status).toBe(200);
-            //expect(result.body).toHaveProperty("token");
+            expect(result.body).toHaveProperty("token");
 
         });
 
