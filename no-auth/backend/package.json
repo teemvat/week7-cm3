@@ -9,7 +9,7 @@
     "test": "cross-env NODE_ENV=test jest --verbose --runInBand",
     "data:import": "node seeder",
     "data:destroy": "node seeder -d",
-    "build":""
+    "build": ""
   },
   "keywords": [],
   "author": "",
