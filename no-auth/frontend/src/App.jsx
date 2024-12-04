@@ -11,6 +11,8 @@ import Home from "./pages/HomePage";
 import AddJobPage from "./pages/AddJobPage";
 import JobPage from "./pages/JobPage";
 import EditJobPage from "./pages/EditJobPage";
+import SignupPage from "./pages/SignupPage";
+import LoginPage from "./pages/LoginPage";
 import NotFoundPage from "./pages/NotFoundPage";
 
 const App = () => {
@@ -21,6 +23,8 @@ const App = () => {
         <Route path="/jobs/add-job" element={<AddJobPage />} />
         <Route path="/edit-job/:id" element={<EditJobPage />} />
         <Route path="/jobs/:id" element={<JobPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/login" element={<LoginPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     )
