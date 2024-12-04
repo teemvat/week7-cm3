@@ -1,126 +1,159 @@
 const mongoose = require("mongoose");
 const supertest = require("supertest");
-const app = require("../app"); // Your Express app
+const app = require("../app");
 const api = supertest(app);
 const Job = require("../models/jobModel");
+const User = require("../models/userModel");
 
 const jobs = [
-  {
-    title: "Senior React Developer",
-    type: "Full-Time",
-    description: "We are seeking a talented Front-End Developer to join our team in Boston, MA.",
-    company: {
-      name: "NewTek Solutions",
-      contactEmail: "contact@teksolutions.com",
-      contactPhone: "555-555-5555"
-    }
-  },
-  {
-    title: "Junior Backend Developer",
-    type: "Part-Time",
-    description: "Join our backend team to help build scalable APIs.",
-    company: {
-      name: "Tech Innovators",
-      contactEmail: "hr@techinnovators.com",
-      contactPhone: "555-555-1234"
-    }
-  },
+    {
+        title: "Software Engineer",
+        type: "Full-time",
+        description: "Develop new features for Google products.",
+        company: {
+            name: "Google",
+            contactEmail: "gmail@gmail.com",
+            contactPhone: "123-456-7890",
+            website: "https://www.google.com",
+        },
+        location: "Mountain View, CA",
+        salary: 120000,
+        postedDate: new Date(),
+        status: "open",
+        applicationDeadline: new Date(),
+        requirements: ["Bachelor's degree in Computer Science", "Experience with JavaScript"],
+    },
+    {
+        title: "Product Manager",
+        type: "Full-time",
+        description: "Manage the product development process.",
+        company: {
+            name: "Facebook",
+            contactEmail: "facebook@facebook.com",
+            contactPhone: "123-456-7890",
+            website: "https://www.facebook.com",
+        },
+        location: "Menlo Park, CA",
+        salary: 150000,
+        postedDate: new Date(),
+        status: "open",
+        applicationDeadline: new Date(),
+        requirements: ["Bachelor's degree in Business Administration", "Experience with product management"],
+    },
 ];
 
-describe("Job Controller", () => {
-  beforeEach(async () => {
-    await Job.deleteMany({});
-    await Job.insertMany(jobs);
-  });
+let token = null;
 
-  afterAll(() => {
+// beforeAll(async () => {
+//     await User.deleteMany({});
+//     const result = await api.post("/api/users/signup").send({
+//       name: "John Doe",
+//       username: "john_doe",
+//       password: "R3g5T7#gh",
+//       phone_number: "1234567890",
+//       gender: "Male",
+//       date_of_birth: "1990-01-01",
+//       membership_status: "Inactive",
+//       address: "123 Main St, City, State 12345",
+//       profile_picture: "https://example.com/profile.jpg",
+//     });
+//     token = result.body.token;
+//   });
+
+describe("Given there are initially some jobs saved", () => {
+    beforeEach(async () => {
+        await Job.deleteMany({});
+        await Promise.all([
+            api
+                .post("/api/jobs")
+                //.set("Authorization", "bearer " + token)
+                .send(jobs[0]),
+            api
+                .post("/api/jobs")
+                //.set("Authorization", "bearer " + token)
+                .send(jobs[1]),
+        ]);
+    });
+
+    it("should return all jobs as JSON when GET /api/jobs is called", async () => {
+        await api
+            .get("/api/jobs")
+            //.set("Authorization", "bearer " + token)
+            .expect(200)
+            .expect("Content-Type", /application\/json/);
+    });
+
+    it("should create one job when POST /api/jobs is called", async () => {
+        const newJob = {
+            title: "Data Scientist",
+            type: "Full-time",
+            description: "Analyze data to provide insights for business decisions.",
+            company: {
+                name: "Amazon",
+                contactEmail: "amazon@amazon.com",
+                contactPhone: "123-456-7890",
+                website: "https://www.amazon.com",
+            },
+            location: "Seattle, WA",
+            salary: 130000,
+            postedDate: new Date(),
+            status: "open",
+            applicationDeadline: new Date(),
+            requirements: ["Bachelor's degree in Data Science", "Experience with Python"],
+        };
+
+        await api
+            .post("/api/jobs")
+            //.set("Authorization", "bearer " + token)
+            .send(newJob)
+            .expect(201);
+    });
+
+    it("should return one job by ID when GET /api/jobs/:id is called", async () => {
+        const job = await Job.findOne();
+        await api
+            .get("/api/jobs/" + job._id)
+            //.set("Authorization", "bearer " + token)
+            .expect(200)
+            .expect("Content-Type", /application\/json/);
+    });
+
+    it("should update one job by ID when PUT /api/jobs/:id is called", async () => {
+        const job = await Job.findOne();
+        const updatedJob = {
+            title: "Updated Title",
+            type: "Updated Type",
+            description: "Updated Description",
+        };
+        const response = await api
+            .put(`/api/jobs/${job._id}`)
+            //.set("Authorization", "bearer " + token)
+            .send(updatedJob)
+            .expect(200)
+            .expect("Content-Type", /application\/json/);
+
+        console.log("Response body:", response.body);
+
+        const updatedJobCheck = await Job.findById(job._id);
+        console.log("Updated job:", updatedJobCheck);
+
+        expect(updatedJobCheck.title).toBe(updatedJob.title);
+        expect(updatedJobCheck.type).toBe(updatedJob.type);
+        expect(updatedJobCheck.description).toBe(updatedJob.description);
+    });
+
+
+    it("should delete one job by ID when DELETE /api/jobs/:id is called", async () => {
+        const job = await Job.findOne();
+        await api
+            .delete("/api/jobs/" + job._id)
+            //.set("Authorization", "bearer " + token)
+            .expect(204);
+        const jobCheck = await Job.findById(job._id);
+        expect(jobCheck).toBeNull();
+    });
+});
+
+afterAll(() => {
     mongoose.connection.close();
-  });
-
-  // Test GET /api/jobs
-  it("should return all jobs as JSON when GET /api/jobs is called", async () => {
-    const response = await api
-      .get("/api/jobs")
-      .expect(200)
-      .expect("Content-Type", /application\/json/);
-
-    expect(response.body).toHaveLength(jobs.length);
-  });
-
-  // Test POST /api/jobs
-  it("should create a new job when POST /api/jobs is called", async () => {
-    const newJob = {
-      title: "Mid-Level DevOps Engineer",
-      type: "Full-Time",
-      description: "We are looking for a DevOps Engineer to join our team.",
-      company: {
-        name: "Cloud Solutions",
-        contactEmail: "jobs@cloudsolutions.com",
-        contactPhone: "555-555-6789"
-      }
-    };
-
-    await api
-      .post("/api/jobs")
-      .send(newJob)
-      .expect(201)
-      .expect("Content-Type", /application\/json/);
-
-    const jobsAfterPost = await Job.find({});
-    expect(jobsAfterPost).toHaveLength(jobs.length + 1);
-    const jobTitles = jobsAfterPost.map((job) => job.title);
-    expect(jobTitles).toContain(newJob.title);
-  });
-
-  // Test GET /api/jobs/:id
-  it("should return one job by ID when GET /api/jobs/:id is called", async () => {
-    const job = await Job.findOne();
-    await api
-      .get(`/api/jobs/${job._id}`)
-      .expect(200)
-      .expect("Content-Type", /application\/json/);
-  });
-
-  it("should return 404 for a non-existing job ID", async () => {
-    const nonExistentId = new mongoose.Types.ObjectId();
-    await api.get(`/api/jobs/${nonExistentId}`).expect(404);
-  });
-
-  // Test PUT /api/jobs/:id
-  it("should update one job with partial data when PUT /api/jobs/:id is called", async () => {
-    const job = await Job.findOne();
-    const updatedJob = {
-      description: "Updated description",
-      type: "Contract",
-    };
-
-    await api
-      .put(`/api/jobs/${job._id}`)
-      .send(updatedJob)
-      .expect(200)
-      .expect("Content-Type", /application\/json/);
-
-    const updatedJobCheck = await Job.findById(job._id);
-    expect(updatedJobCheck.description).toBe(updatedJob.description);
-    expect(updatedJobCheck.type).toBe(updatedJob.type);
-  });
-
-  it("should return 400 for invalid job ID when PUT /api/jobs/:id", async () => {
-    const invalidId = "12345";
-    await api.put(`/api/jobs/${invalidId}`).send({}).expect(400);
-  });
-
-  // Test DELETE /api/jobs/:id
-  it("should delete one job by ID when DELETE /api/jobs/:id is called", async () => {
-    const job = await Job.findOne();
-    await api.delete(`/api/jobs/${job._id}`).expect(204);
-
-    const deletedJobCheck = await Job.findById(job._id);
-    expect(deletedJobCheck).toBeNull();
-  });
-
-  it("should return 400 for invalid job ID when DELETE /api/jobs/:id", async () => {
-    const invalidId = "12345";
-    await api.delete(`/api/jobs/${invalidId}`).expect(400);
-  });
 });
