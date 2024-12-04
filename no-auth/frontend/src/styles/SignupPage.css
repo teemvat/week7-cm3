@@ -1,0 +1,55 @@
+.signup-page {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #f1356d;
+    border-radius: 5px;
+    background-color: #fff;
+  }
+  
+  .signup-page h2 {
+    text-align: center;
+    color: #f1356d;
+    margin-bottom: 20px;
+  }
+  
+  .signup-page form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .signup-page label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .signup-page input[type="text"],
+  .signup-page input[type="password"],
+  .signup-page input[type="tel"],
+  .signup-page input[type="date"],
+  .signup-page input[type="file"],
+  .signup-page select {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .signup-page input[type="radio"] {
+    margin-right: 10px;
+  }
+  
+  .signup-page button {
+    padding: 10px;
+    background-color: #f1356d;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .signup-page button:hover {
+    background-color: #d12a5c;
+  }
