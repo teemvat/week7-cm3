@@ -2,12 +2,11 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 const EditJobPage = () => {
-  const [job, setJob] = useState(null); // Initialize job state
-  const [loading, setLoading] = useState(true); // Loading state
-  const [error, setError] = useState(null); // Error state
   const { id } = useParams();
+  const [job, setJob] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Declare state variables for form fields
   const [title, setTitle] = useState("");
   const [type, setType] = useState("");
   const [description, setDescription] = useState("");
@@ -17,14 +16,14 @@ const EditJobPage = () => {
 
   const navigate = useNavigate();
 
-  const updateJob = async (job) => {
+  const updateJob = async (updatedJob) => {
     try {
-      const res = await fetch(`/api/jobs/${job.id}`, {
+      const res = await fetch(`/api/jobs/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(job),
+        body: JSON.stringify(updatedJob),
       });
       if (!res.ok) throw new Error("Failed to update job");
       return res.ok;
@@ -34,18 +33,14 @@ const EditJobPage = () => {
     }
   };
 
-  // Fetch job data
   useEffect(() => {
     const fetchJob = async () => {
       try {
         const res = await fetch(`/api/jobs/${id}`);
-        if (!res.ok) {
-          throw new Error("Network response was not ok");
-        }
+        if (!res.ok) throw new Error("Failed to fetch job");
         const data = await res.json();
-        setJob(data); // Set the job data
+        setJob(data);
 
-        // Initialize form fields with fetched job data
         setTitle(data.title);
         setType(data.type);
         setDescription(data.description);
@@ -53,17 +48,16 @@ const EditJobPage = () => {
         setContactEmail(data.company.contactEmail);
         setContactPhone(data.company.contactPhone);
       } catch (error) {
-        console.error("Failed to fetch job:", error);
+        console.error("Error fetching job:", error);
         setError(error.message);
       } finally {
-        setLoading(false); // Stop loading after fetch
+        setLoading(false);
       }
     };
 
     fetchJob();
   }, [id]);
 
-  // Handle form submission
   const submitForm = async (e) => {
     e.preventDefault();
 
@@ -81,16 +75,13 @@ const EditJobPage = () => {
 
     const success = await updateJob(updatedJob);
     if (success) {
-      // toast.success("Job Updated Successfully");
       navigate(`/jobs/${id}`);
-    } else {
-      // toast.error("Failed to update the job");
     }
   };
 
   return (
     <div className="create">
-      <h2>Update Job</h2>
+      <h2>Edit Job</h2>
       {loading ? (
         <p>Loading...</p>
       ) : error ? (
@@ -127,7 +118,7 @@ const EditJobPage = () => {
           />
           <label>Contact Email:</label>
           <input
-            type="text"
+            type="email"
             required
             value={contactEmail}
             onChange={(e) => setContactEmail(e.target.value)}

@@ -8,8 +8,13 @@ const Home = () => {
 
   useEffect(() => {
     const fetchJobs = async () => {
+      const token = localStorage.getItem("authToken");
       try {
-        const res = await fetch("api/jobs");
+        const res = await fetch("api/jobs", {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          },
+        });
         if (!res.ok) {
           throw new Error("could not fetch the data for that resource");
         }
@@ -22,7 +27,7 @@ const Home = () => {
         setError(err.message);
       }
     };
-    // setTimeout(() => {fetchJobs();}, 1000); // Delay of 1 second
+
     fetchJobs();
   }, []);
 

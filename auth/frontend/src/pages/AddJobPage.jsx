@@ -10,7 +10,7 @@ const AddJobPage = () => {
   const [contactPhone, setContactPhone] = useState("");
 
   const navigate = useNavigate();
- 
+
   const addJob = async (newJob) => {
     try {
       const res = await fetch("/api/jobs", {
@@ -23,11 +23,11 @@ const AddJobPage = () => {
       if (!res.ok) {
         throw new Error("Failed to add job");
       }
+      navigate("/");
     } catch (error) {
       console.error(error);
-      return false;
+      alert("Failed to add job");
     }
-    return true;
   };
 
   const submitForm = (e) => {
@@ -45,7 +45,6 @@ const AddJobPage = () => {
     };
 
     addJob(newJob);
-    return navigate("/");
   };
 
   return (
@@ -82,7 +81,7 @@ const AddJobPage = () => {
         />
         <label>Contact Email:</label>
         <input
-          type="text"
+          type="email"
           required
           value={contactEmail}
           onChange={(e) => setContactEmail(e.target.value)}

@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import "../styles/LoginPage.css";
 
@@ -8,7 +8,7 @@ const LoginPage = () => {
         username: "",
         password: "",
     });
-    
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({
@@ -29,17 +29,18 @@ const LoginPage = () => {
 
         const data = await response.json();
 
-        if (response.ok)
-            {navigate("/")}
-
-        else {alert("Wrong username or password")};
+        if (response.ok) {
+            localStorage.setItem("authToken", data.token);
+            navigate("/");
+        } else {
+            alert("Wrong username or password");
+        }
     };
-    return (
 
+    return (
         <div className="login-page">
             <h2>Login</h2>
             <form onSubmit={submitForm}>
-
                 <label htmlFor="username">Username</label>
                 <input type="text" name="username" value={formData.username} onChange={handleChange} required />
 
@@ -49,7 +50,7 @@ const LoginPage = () => {
                 <button type="submit">Login</button>
             </form>
             <div className="signup-redirect">
-                <p>New in here? Sign up to be a user</p>
+                <p>New here? Sign up to be a user</p>
                 <button onClick={() => navigate("/signup")}>Sign Up</button>
             </div>
         </div>
