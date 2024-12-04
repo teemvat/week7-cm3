@@ -1,6 +1,14 @@
 const mongoose = require("mongoose");
 const User = require("../models/userModel");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
+
+const generateToken = (_id) => {
+  return jwt.sign({ _id }, process.env.SECRET, {
+    expiresIn: "3d",
+  });
+};
 
 const signupUser = async (req, res) => {
   const {
@@ -23,8 +31,7 @@ const signupUser = async (req, res) => {
       !gender ||
       !date_of_birth ||
       !membership_status ||
-      !address ||
-      !profile_picture
+      !address
     ) {
       res.status(400);
       throw new Error("Please add all fields");
@@ -35,7 +42,7 @@ const signupUser = async (req, res) => {
       res.status(400);
       throw new Error("User already exists");
     }
-
+    //hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
@@ -52,7 +59,8 @@ const signupUser = async (req, res) => {
       profile_picture,
     });
     if (user) {
-      res.status(201).json({ username });
+      const token = generateToken(user._id);
+      res.status(201).json({ username, token });
     } else {
       throw new Error("Invalid user data");
     }
@@ -69,7 +77,8 @@ const loginUser = async (req, res) => {
   try {
     const user = await User.findOne({ username });
     if (user && (await bcrypt.compare(password, user.password))) {
-      res.status(200).json({ username });
+      token = generateToken(user._id);
+      res.status(200).json({ username, token });
     } else {
       res.status(400);
       throw new Error("Invalid credentials");
