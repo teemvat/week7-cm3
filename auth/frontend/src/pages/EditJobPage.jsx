@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-const EditJobPage = () => {
+const EditJobPage = ({ authToken }) => {
   const { id } = useParams();
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -22,6 +22,7 @@ const EditJobPage = () => {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${authToken}`,
         },
         body: JSON.stringify(updatedJob),
       });
@@ -36,7 +37,11 @@ const EditJobPage = () => {
   useEffect(() => {
     const fetchJob = async () => {
       try {
-        const res = await fetch(`/api/jobs/${id}`);
+        const res = await fetch(`/api/jobs/${id}`, {
+          headers: {
+            "Authorization": `Bearer ${authToken}`,
+          },
+        });
         if (!res.ok) throw new Error("Failed to fetch job");
         const data = await res.json();
         setJob(data);
@@ -56,7 +61,7 @@ const EditJobPage = () => {
     };
 
     fetchJob();
-  }, [id]);
+  }, [id, authToken]);
 
   const submitForm = async (e) => {
     e.preventDefault();

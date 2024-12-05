@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-const JobPage = () => {
+const JobPage = ({ authToken }) => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [job, setJob] = useState(null);
@@ -13,6 +13,9 @@ const JobPage = () => {
       console.log("Deleting job with ID:", id);
       const res = await fetch(`/api/jobs/${id}`, {
         method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${authToken}`,
+        },
       });
       if (!res.ok) {
         const errorData = await res.json();
@@ -30,7 +33,11 @@ const JobPage = () => {
     console.log("Fetching job with ID:", id);
     const fetchJob = async () => {
       try {
-        const res = await fetch(`/api/jobs/${id}`);
+        const res = await fetch(`/api/jobs/${id}`, {
+          headers: {
+            "Authorization": `Bearer ${authToken}`,
+          },
+        });
         if (!res.ok) {
           throw new Error("Network response was not ok");
         }
@@ -44,7 +51,7 @@ const JobPage = () => {
     };
 
     fetchJob();
-  }, [id]);
+  }, [id, authToken]);
 
   const onDeleteClick = (jobId) => {
     if (!jobId) {

@@ -20,7 +20,7 @@ const Navbar = ({ authToken, logout }) => {
           </>
         ) : (
           <>
-          <a href="/jobs/add-job">Add Job</a>
+          <a href="/add-job">Add Job</a>
           <button onClick={handleLogout}>Logout</button>
           </>
         )}

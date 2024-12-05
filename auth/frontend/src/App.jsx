@@ -3,6 +3,9 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
+import JobPage from "./pages/JobPage";
+import EditJobPage from "./pages/EditJobPage";
+import AddJobPage from "./pages/AddJobPage";
 import Navbar from "./components/Navbar";
 
 const App = () => {
@@ -25,6 +28,9 @@ const App = () => {
         <Route path="/" element={<HomePage authToken={authToken} />} />
         <Route path="/login" element={<LoginPage login={login} />} />
         <Route path="/signup" element={<SignupPage />} />
+        <Route path="/jobs/:id" element={<JobPage authToken={authToken} />} />
+        <Route path="/edit-job/:id" element={<EditJobPage authToken={authToken} />} />
+        <Route path="/add-job" element={<AddJobPage authToken={authToken} />} />
       </Routes>
     </Router>
   );

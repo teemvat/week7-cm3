@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const AddJobPage = () => {
+const AddJobPage = ({ authToken }) => {
   const [title, setTitle] = useState("");
   const [type, setType] = useState("Full-Time");
   const [description, setDescription] = useState("");
@@ -24,6 +24,7 @@ const AddJobPage = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${authToken}`,
         },
         body: JSON.stringify(newJob),
       });
@@ -32,11 +33,10 @@ const AddJobPage = () => {
         console.error("Server response:", errorData);
         throw new Error(`Failed to add job: ${res.status} ${res.statusText}`);
       }
-      return true;
+      navigate("/");
     } catch (error) {
       console.error(error);
       alert("Failed to add job");
-      return false;
     }
   };
 
@@ -58,12 +58,9 @@ const AddJobPage = () => {
       postedDate,
       status,
       applicationDeadline,
-      requirements
+      requirements: requirements.split(",").map((req) => req.trim()),
     };
-    const success = addJob(newJob);
-    if (success) {
-      navigate("/");
-    }
+    addJob(newJob);
   };
 
   return (
