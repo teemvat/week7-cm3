@@ -31,7 +31,9 @@ const JobPage = () => {
     const fetchJob = async () => {
       try {
         const res = await fetch(`/api/jobs/${id}`);
-        if (!res.ok) throw new Error("Failed to fetch job");
+        if (!res.ok) {
+          throw new Error("Network response was not ok");
+        }
         const data = await res.json();
         setJob(data);
       } catch (err) {
@@ -64,19 +66,11 @@ const JobPage = () => {
         <>
           <h2>{job.title}</h2>
           <p>Type: {job.type}</p>
-          <p>{job.description}</p>
-          <p>
-            <strong>Company:</strong> {job.company.name}
-          </p>
-          <p>
-            <strong>Contact Email:</strong> {job.company.contactEmail}
-          </p>
-          <p>
-            <strong>Contact Phone:</strong> {job.company.contactPhone}
-          </p>
-          <button onClick={() => navigate(`/edit-job/${job._id}`)}>
-            Edit Job
-          </button>
+          <p>Description: {job.description}</p>
+          <p>Company: {job.company.name}</p>
+          <p>Contact Email: {job.company.contactEmail}</p>
+          <p>Contact Phone: {job.company.contactPhone}</p>
+          <button onClick={() => navigate(`/edit-job/${job._id}`)}>Edit Job</button>
           <button onClick={() => onDeleteClick(job._id)}>Delete Job</button>
         </>
       ) : (

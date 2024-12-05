@@ -6,8 +6,13 @@ const {
   updateJob,
   deleteJob,
 } = require("../controllers/jobControllers");
+const requireAuth = require("../middleware/requireAuth"); // Uusi, autentikointia varten
 
 const router = express.Router();
+
+// Kaikki reitit edellyttävät sisäänkirjautumista, joten käytä middlewarea kaikissa
+// Jos työt halutaan näyttää kaikille mutta muokkaukset vain kirjautuneille niin lisää middleware suoraan halutuihin reitteihin
+router.use(requireAuth);  // Uusi lisäys
 
 router.get("/", getAllJobs);
 router.post("/", createJob);

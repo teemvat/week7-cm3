@@ -5,26 +5,38 @@ const Home = () => {
   const [jobs, setJobs] = useState(null);
   const [isPending, setIsPending] = useState(true);
   const [error, setError] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     const fetchJobs = async () => {
       const token = localStorage.getItem("authToken");
+
+      if (!token) {
+        setIsLoggedIn(false);
+        setIsPending(false);
+        return;
+      }
+
       try {
-        const res = await fetch("http://localhost:4000/api/jobs", {
+        const res = await fetch("/api/jobs", {
           headers: {
             "Authorization": `Bearer ${token}`,
           },
         });
+
         if (!res.ok) {
           throw new Error("could not fetch the data for that resource");
         }
+
         const data = await res.json();
-        setIsPending(false);
+        setIsLoggedIn(true);
         setJobs(data);
         setError(null);
       } catch (err) {
-        setIsPending(false);
         setError(err.message);
+        setIsLoggedIn(false);
+      } finally {
+        setIsPending(false);
       }
     };
 
@@ -33,9 +45,15 @@ const Home = () => {
 
   return (
     <div className="home">
-      {error && <div>{error}</div>}
       {isPending && <div>Loading...</div>}
-      {jobs && <JobListings jobs={jobs} />}
+      {error && <div>{error}</div>}
+      {!isLoggedIn && !isPending && (
+        <div>
+          <h2>Welcome to Job Search!</h2>
+          <p>Please log in to view job listings.</p>
+        </div>
+      )}
+      {isLoggedIn && jobs && <JobListings jobs={jobs} />}
     </div>
   );
 };

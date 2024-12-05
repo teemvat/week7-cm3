@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+//const jwt = require('jsonwebtoken');
 const User = require("../models/userModel");
 const bcrypt = require("bcryptjs");
 
@@ -14,6 +15,7 @@ const signupUser = async (req, res) => {
     address,
     profile_picture,
   } = req.body;
+
   try {
     if (
       !name ||
@@ -23,8 +25,7 @@ const signupUser = async (req, res) => {
       !gender ||
       !date_of_birth ||
       !membership_status ||
-      !address ||
-      !profile_picture
+      !address
     ) {
       res.status(400);
       throw new Error("Please add all fields");
@@ -51,8 +52,14 @@ const signupUser = async (req, res) => {
       address,
       profile_picture,
     });
+
     if (user) {
-      res.status(201).json({ username });
+      // const token = jwt.sign(
+      //   { userId: user._id },
+      //   process.env.JWT_SECRET,
+      //   { expiresIn: '1h' }
+      // );
+      res.status(201).json({ username }); // { username, token }
     } else {
       throw new Error("Invalid user data");
     }

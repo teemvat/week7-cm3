@@ -58,7 +58,7 @@ const SignupPage = () => {
         if (response.ok)
             {navigate("/")}
 
-        else {alert(data.message)};
+        else {alert(data.message)}
     };
 
     return (
