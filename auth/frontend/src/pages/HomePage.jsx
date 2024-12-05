@@ -1,26 +1,23 @@
 import { useEffect, useState } from "react";
 import JobListings from "../components/JobListings";
 
-const Home = () => {
+const Home = ({ authToken }) => {
   const [jobs, setJobs] = useState(null);
   const [isPending, setIsPending] = useState(true);
   const [error, setError] = useState(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
+    if (!authToken) {
+      setIsPending(false);
+      return;
+    }
+
     const fetchJobs = async () => {
-      const token = localStorage.getItem("authToken");
-
-      if (!token) {
-        setIsLoggedIn(false);
-        setIsPending(false);
-        return;
-      }
-
+      setIsPending(true);
       try {
         const res = await fetch("/api/jobs", {
           headers: {
-            "Authorization": `Bearer ${token}`,
+            "Authorization": `Bearer ${authToken}`,
           },
         });
 
@@ -29,31 +26,29 @@ const Home = () => {
         }
 
         const data = await res.json();
-        setIsLoggedIn(true);
         setJobs(data);
         setError(null);
       } catch (err) {
         setError(err.message);
-        setIsLoggedIn(false);
       } finally {
         setIsPending(false);
       }
     };
 
     fetchJobs();
-  }, []);
+  }, [authToken]);
 
   return (
     <div className="home">
       {isPending && <div>Loading...</div>}
       {error && <div>{error}</div>}
-      {!isLoggedIn && !isPending && (
+      {!authToken && !isPending && (
         <div>
-          <h2>Welcome to Job Search!</h2>
+          <h3>Welcome to Job Search!</h3>
           <p>Please log in to view job listings.</p>
         </div>
       )}
-      {isLoggedIn && jobs && <JobListings jobs={jobs} />}
+      {authToken && jobs && <JobListings jobs={jobs} />}
     </div>
   );
 };

@@ -56,6 +56,7 @@ const SignupPage = () => {
         const data = await response.json();
         console.log(data);
         if (response.ok) {
+            localStorage.setItem("token", data.token);
             navigate("/");
         } else {
             alert(data.message);

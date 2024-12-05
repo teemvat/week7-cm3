@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-//const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 const User = require("../models/userModel");
 const bcrypt = require("bcryptjs");
 
@@ -54,12 +54,12 @@ const signupUser = async (req, res) => {
     });
 
     if (user) {
-      // const token = jwt.sign(
-      //   { userId: user._id },
-      //   process.env.JWT_SECRET,
-      //   { expiresIn: '1h' }
-      // );
-      res.status(201).json({ username }); // { username, token }
+      const token = jwt.sign(
+        { userId: user._id },
+        process.env.JWT_SECRET,
+        { expiresIn: '1h' }
+      );
+      res.status(201).json({ username, token });
     } else {
       throw new Error("Invalid user data");
     }
@@ -76,7 +76,13 @@ const loginUser = async (req, res) => {
   try {
     const user = await User.findOne({ username });
     if (user && (await bcrypt.compare(password, user.password))) {
-      res.status(200).json({ username });
+      const token = jwt.sign(
+        { userId: user._id },
+        process.env.JWT_SECRET,
+        { expiresIn: "1h" }
+      );
+
+      res.status(200).json({ username, token });
     } else {
       res.status(400);
       throw new Error("Invalid credentials");
