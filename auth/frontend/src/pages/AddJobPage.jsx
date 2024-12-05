@@ -12,7 +12,7 @@ const AddJobPage = ({ authToken }) => {
   const [location, setLocation] = useState("");
   const [salary, setSalary] = useState("");
   const [postedDate, setPostedDate] = useState("");
-  const [status, setStatus] = useState("open"); // open/close
+  const [status, setStatus] = useState("open");
   const [applicationDeadline, setApplicationDeadline] = useState("");
   const [requirements, setRequirements] = useState("");
 
