@@ -5,8 +5,14 @@ const Home = () => {
   const [jobs, setJobs] = useState(null);
   const [isPending, setIsPending] = useState(true);
   const [error, setError] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
+    const user = localStorage.getItem("user");
+    if (user) {
+      setIsAuthenticated(true);
+    }
+
     const fetchJobs = async () => {
       try {
         const res = await fetch("api/jobs");
@@ -22,7 +28,6 @@ const Home = () => {
         setError(err.message);
       }
     };
-    // setTimeout(() => {fetchJobs();}, 1000); // Delay of 1 second
     fetchJobs();
   }, []);
 
@@ -30,7 +35,7 @@ const Home = () => {
     <div className="home">
       {error && <div>{error}</div>}
       {isPending && <div>Loading...</div>}
-      {jobs && <JobListings jobs={jobs} />}
+      {jobs && <JobListings jobs={jobs} isAuthenticated={isAuthenticated} />}
     </div>
   );
 };

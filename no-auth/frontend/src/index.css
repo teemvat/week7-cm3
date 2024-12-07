@@ -33,7 +33,24 @@
   margin: 40px auto;
   padding: 20px;
 }
+.navbar a,
+.navbar .nav-link {
+  margin-left: 16px;
+  text-decoration: none;
+  padding: 6px;
+  color: #f1356d;
+  font-weight: bold;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
 
+.navbar a:hover,
+.navbar .nav-link:hover {
+  color: #f1356d;
+  text-decoration: underline;
+}
 /* job previews / list */
 
 .job-list {
@@ -55,6 +72,19 @@
 
 .job-preview:hover {
   box-shadow: 1px 3px 5px rgba(41, 20, 156, 0.1);
+}
+
+.job-preview button {
+  margin: 5px; 
+  border: 1px solid #f1356d;
+  padding: 10px;
+  border-radius: 5px; 
+  cursor: pointer; 
+}
+
+.job-preview button:hover {
+  background-color: #f1356d; 
+  color: #fff; 
 }
 
 .job-preview h2 {

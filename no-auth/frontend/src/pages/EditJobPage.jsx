@@ -82,7 +82,7 @@ const EditJobPage = () => {
     const success = await updateJob(updatedJob);
     if (success) {
       // toast.success("Job Updated Successfully");
-      navigate(`/jobs/${id}`);
+      navigate(`/`);
     } else {
       // toast.error("Failed to update the job");
     }

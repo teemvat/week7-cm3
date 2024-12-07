@@ -7,25 +7,16 @@ const JobPage = () => {
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  const deleteJob = async (id) => {
-    try {
-      const res = await fetch(`/api/jobs/${id}`, {
-        method: "DELETE",
-      });
-      if (!res.ok) {
-        throw new Error("Failed to delete job");
-      }
-      navigate("/");
-    } catch (error) {
-      console.error("Error deleting job:", error);
-    }
-  };
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
+    const user = localStorage.getItem("user");
+    if (user) {
+      setIsAuthenticated(true);
+    }
+
     const fetchJob = async () => {
       try {
-        console.log("id: ", id);
         const res = await fetch(`/api/jobs/${id}`);
         if (!res.ok) {
           throw new Error("Network response was not ok");
@@ -42,13 +33,18 @@ const JobPage = () => {
     fetchJob();
   }, [id]);
 
-  const onDeleteClick = (jobId) => {
-    const confirm = window.confirm(
-      "Are you sure you want to delete this listing?" + jobId
-    );
-    if (!confirm) return;
-
-    deleteJob(jobId);
+  const deleteJob = async (id) => {
+    try {
+      const res = await fetch(`/api/jobs/${id}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) {
+        throw new Error("Failed to delete job");
+      }
+      navigate("/");
+    } catch (error) {
+      console.error("Error deleting job:", error);
+    }
   };
 
   return (
@@ -65,8 +61,12 @@ const JobPage = () => {
           <p>Company: {job.company.name}</p>
           <p>Email: {job.company.contactEmail}</p>
           <p>Phone: {job.company.contactPhone}</p>
-          <button onClick={() => onDeleteClick(job._id)}>delete</button>
-          <button onClick={() => navigate(`/edit-job/${job._id}`)}>edit</button>
+          {isAuthenticated && (
+            <>
+              <button onClick={() => navigate(`/edit-job/${job.id}`)}>Edit Job</button>
+              <button onClick={() => deleteJob(job.id)}>Delete Job</button>
+            </>
+          )}
         </>
       )}
     </div>
